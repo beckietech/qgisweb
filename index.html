@@ -267,7 +267,6 @@ results.push(layer_Gy_A_rice_weight_UTMz51_1._layers[i]);
 console.log(layer_Gy_A_rice_weight_UTMz51_1._layers[i]._leaflet_id);
 arr2.push(layer_Gy_A_rice_weight_UTMz51_1._layers[i].feature.properties['PARCEL_NO']);
 results.flatMap(item =>{item.setStyle({fillColor :'#00ff0f'});item.bindTooltip(item.feature.properties['Area'].toString());item.toggleTooltip();});
-        }
 if (clickCircle != undefined) {
       map.removeLayer(clickCircle);
     };
