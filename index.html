@@ -1,7 +1,8 @@
 <!doctype html> <html lang="en">
     <head>
         <meta charset="utf-8">
-	<meta http-equiv="cache-control" content="max-age=31536000" />
+        <meta http-equiv="cache-control" content="max-age=31536000" />
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
         <meta name="mobile-web-app-capable" content="yes">
@@ -12,13 +13,20 @@
         <link  rel="stylesheet" href="css/fontawesome-all.min.css">
 	<!--<script src="https://cdn.jsdelivr.net/npm/@turf/turf@7.1.0/turf.min.js"></script>-->
 	<script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+	<script src="jquery.min.js"></script>
+	<script src="https://unpkg.com/runtime-memcache@3.0.0"></script>
+	<script src="
+https://cdn.jsdelivr.net/npm/polygon-clipping@0.15.7/dist/polygon-clipping.umd.min.js
+"></script>
+<script>
+  // RMStore is globaly set
+  globalThis.store = new RMStore();
+  //jQuery.data(document.body, "store", new RMStore());
+</script>
 	 <!--<link rel="stylesheet" href="nprogress.css">
         <link rel="stylesheet" href="main.css">
         <script src="jquery.min.js" defer></script>
         <script src="nprogress.js" defer></script>
-	<script src="
-https://cdn.jsdelivr.net/npm/polygon-clipping@0.15.7/dist/polygon-clipping.umd.min.js
-"></script>
         <script type="text/javascript" defer>
                     $(function(){
                         NProgress.configure({
@@ -36,6 +44,19 @@ https://cdn.jsdelivr.net/npm/polygon-clipping@0.15.7/dist/polygon-clipping.umd.m
             height: 100%;
             padding: 0;
             margin: 0;
+        }
+        #dia {
+            background-color: rgba(0, 0, 0, 0.3);
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+            padding: 0;
+            border: 0;
+            margin: auto 0 0 0;
+            display:inline-block;
+            max-height: 460vh;
+            width: 100%;
+            max-width: 100% !important;/* add this */
         }
         </style>
         <title>2022_衛星預估產量</title>
@@ -57,6 +78,9 @@ https://cdn.jsdelivr.net/npm/polygon-clipping@0.15.7/dist/polygon-clipping.umd.m
 	<!--<canvas id="myCanvas" width="800" height="600"></canvas>-->
         <div id="map">
         </div>
+        <dialog id="dia">
+            <p style="text-align:center"><strong>Loading Please Wait!</strong></p>
+        </dialog>
         <script src="js/qgis2web_expressions.js"></script>
         <script src="js/leaflet.js"></script>
         <!--<script src="js/L.Control.Layers.Tree.min.js"></script>-->
@@ -69,13 +93,34 @@ https://cdn.jsdelivr.net/npm/polygon-clipping@0.15.7/dist/polygon-clipping.umd.m
         <script src="js/labels.js"></script>
         <script src="js/leaflet.wms.js"></script>
         <script src="data/Gy_A_rice_weight_UTMz51_1.js"></script>
+        <script id="my_script"></script>
         <script>
-        var highlightLayer;
+        // main.js
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+        navigator.serviceWorker.register('nprogress.js').then(function(registration) {
+            // Registration was successful
+            console.log('Service Worker registration successful with scope: ', registration.scope);
+            navigator.serviceWorker.ready.then( registration => {
+                //obj = JSON.parse(JSON.stringify(globalThis.store));
+                registration.active.postMessage(typeof globalThis.store,JSON.parse(JSON.stringify(globalThis.store)));
+                console.log('passing');
+            });
+            // console.log('Service Worker registration successful with scope: ', registration.scope);
+        }, function(err) {
+            // registration failed :(
+            console.log('ServiceWorker registration failed: ', err);
+        });
+    });
+}
+        
+    var highlightLayer;
 	const queryString = window.location.search;
 	const urlParams = new URLSearchParams(queryString);
 	lat = urlParams.get('lat');
 	lng = urlParams.get('lng');
 	var clickCircle;
+	const results = [];
 
 	console.log(urlParams.get('lat') + '-' + urlParams.get('lng'));
 	////
@@ -250,6 +295,7 @@ https://cdn.jsdelivr.net/npm/polygon-clipping@0.15.7/dist/polygon-clipping.umd.m
 //layer_Gy_A_rice_weight_UTMz51_1._layers[i].feature.geometry.coordinates.map(c => poly = turf.polygon(c));
 //if(turf.booleanIntersects(buffered,poly)||turf.booleanContains(buffered,poly))
 //{
+//results.push(layer_Gy_A_rice_weight_UTMz51_1._layers[i]);
 //console.log(layer_Gy_A_rice_weight_UTMz51_1._layers[i]._leaflet_id);
 //layer_Gy_A_rice_weight_UTMz51_1._layers[i].setStyle({fillColor :'#ffff0f'});
 //layer_Gy_A_rice_weight_UTMz51_1._layers[i].bindTooltip(layer_Gy_A_rice_weight_UTMz51_1._layers[i].feature.properties['wieght_sum'].toString());
@@ -267,6 +313,21 @@ results.push(layer_Gy_A_rice_weight_UTMz51_1._layers[i]);
 console.log(layer_Gy_A_rice_weight_UTMz51_1._layers[i]._leaflet_id);
 arr2.push(layer_Gy_A_rice_weight_UTMz51_1._layers[i].feature.properties['PARCEL_NO']);
 results.flatMap(item =>{item.setStyle({fillColor :'#00ff0f'});item.bindTooltip(item.feature.properties['Area'].toString());item.toggleTooltip();});
+//layer_Gy_A_rice_weight_UTMz51_1._layers[i].setStyle({fillColor :'#ffff0f'});
+//layer_Gy_A_rice_weight_UTMz51_1._layers[i].bindTooltip(layer_Gy_A_rice_weight_UTMz51_1._layers[i].feature.properties['wieght_sum'].toString());
+//layer_Gy_A_rice_weight_UTMz51_1._layers[i].toggleTooltip();
+}}
+};
+console.log(arr2);
+dia.showModal();console.log("1-gon:"+results.length);
+if(results.length == 0){
+    dia.innerHTML='<p style="text-align:center">附近無地號</p>';
+    
+}else{
+    dia.innerHTML = '<input type="search" id="site-search" name="q" /><button onclick="run();">SEARCH</button>';
+    document.getElementById("my_script").innerHTML= "function run(){for(i=0;i<results.length;i++){if (document.getElementById('site-search').value == results[0].feature.properties['PARCEL_NO']){document.getElementById('dia').innerHTML='<table><tr><td>帝號:</td><td> 產量:</td></tr><tr><td>'+results[0].feature.properties['PARCEL_NO'].toString() + '</td><td>' + results[0].feature.properties['wieght_sum'].toString() + '</td></tr></table> ';}else{alert('No Result')};}}";
+}
+        }
 if (clickCircle != undefined) {
       map.removeLayer(clickCircle);
     };
@@ -323,5 +384,6 @@ map.on('click', onMapClick);
 
 
         </script>
+        
     </body>
 </html>
