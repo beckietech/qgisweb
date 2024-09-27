@@ -16,6 +16,9 @@
         <link rel="stylesheet" href="main.css">
         <script src="jquery.min.js" defer></script>
         <script src="nprogress.js" defer></script>
+	<script src="
+https://cdn.jsdelivr.net/npm/polygon-clipping@0.15.7/dist/polygon-clipping.umd.min.js
+"></script>
         <script type="text/javascript" defer>
                     $(function(){
                         NProgress.configure({
@@ -240,19 +243,30 @@
         });
 /////////////////
         function showWeightSum(){
-var poly = null;
-for(let i=40;i<105045;i++)
+//var poly = null;
+//for(let i=40;i<105045;i++)
+//{
+//    if(typeof layer_Gy_A_rice_weight_UTMz51_1._layers[i] != 'undefined'){
+//layer_Gy_A_rice_weight_UTMz51_1._layers[i].feature.geometry.coordinates.map(c => poly = turf.polygon(c));
+//if(turf.booleanIntersects(buffered,poly)||turf.booleanContains(buffered,poly))
+//{
+//console.log(layer_Gy_A_rice_weight_UTMz51_1._layers[i]._leaflet_id);
+//layer_Gy_A_rice_weight_UTMz51_1._layers[i].setStyle({fillColor :'#ffff0f'});
+//layer_Gy_A_rice_weight_UTMz51_1._layers[i].bindTooltip(layer_Gy_A_rice_weight_UTMz51_1._layers[i].feature.properties['wieght_sum'].toString());
+//layer_Gy_A_rice_weight_UTMz51_1._layers[i].toggleTooltip();
+//}}
+//};
+var poly = null,arr2=[],length=layer_Gy_A_rice_weight_UTMz51_1.getLayers().length;
+for(let i=31;i<length;i++)
 {
     if(typeof layer_Gy_A_rice_weight_UTMz51_1._layers[i] != 'undefined'){
-layer_Gy_A_rice_weight_UTMz51_1._layers[i].feature.geometry.coordinates.map(c => poly = turf.polygon(c));
-if(turf.booleanIntersects(buffered,poly)||turf.booleanContains(buffered,poly))
-{
+//layer_Gy_A_rice_weight_UTMz51_1._layers[i].feature.geometry.coordinates.map(c => poly = turf.polygon(c));
+var inter = polygonClipping.intersection(buffered.geometry.coordinates,layer_Gy_A_rice_weight_UTMz51_1._layers[i].feature.geometry.coordinates);if(inter.length != 0){
+    //if(turf.booleanIntersects(buffered,poly)||turf.booleanContains(buffered,poly)){
+results.push(layer_Gy_A_rice_weight_UTMz51_1._layers[i]);
 console.log(layer_Gy_A_rice_weight_UTMz51_1._layers[i]._leaflet_id);
-layer_Gy_A_rice_weight_UTMz51_1._layers[i].setStyle({fillColor :'#ffff0f'});
-layer_Gy_A_rice_weight_UTMz51_1._layers[i].bindTooltip(layer_Gy_A_rice_weight_UTMz51_1._layers[i].feature.properties['wieght_sum'].toString());
-layer_Gy_A_rice_weight_UTMz51_1._layers[i].toggleTooltip();
-}}
-};
+arr2.push(layer_Gy_A_rice_weight_UTMz51_1._layers[i].feature.properties['PARCEL_NO']);
+results.flatMap(item =>{item.setStyle({fillColor :'#00ff0f'});item.bindTooltip(item.feature.properties['Area'].toString());item.toggleTooltip();});
         }
 if (clickCircle != undefined) {
       map.removeLayer(clickCircle);
