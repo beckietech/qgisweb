@@ -39,13 +39,11 @@ https://cdn.jsdelivr.net/npm/polygon-clipping@0.15.7/dist/polygon-clipping.umd.m
 <!--<script type="module">
 import flattenJscore from 'https://cdn.jsdelivr.net/npm/@flatten-js/core@1.6.1/+esm'
 </script>-->
-<script src="https://unpkg.com/geojson-vt/geojson-vt.js"></script>
-<!--<script src="leaflet-geojson-vt.js"></script>-->
-<script>
+<!--<script>
   // RMStore is globaly set
-  globalThis.store = new RMStore();
+  //globalThis.store = new RMStore();
   //jQuery.data(document.body, "store", new RMStore());
-</script>
+</script>-->
 	 <!--<link rel="stylesheet" href="nprogress.css">
         <link rel="stylesheet" href="main.css">
         <script src="jquery.min.js" defer></script>
@@ -104,10 +102,19 @@ import flattenJscore from 'https://cdn.jsdelivr.net/npm/@flatten-js/core@1.6.1/+
         <dialog id="dia">
             <p style="text-align:center"><strong>Loading Please Wait!</strong></p>
         </dialog>
-	<script src="https://niusil.myqnapcloud.com:8081/barcode/qgis2web/data/Gy_A_rice_weight_UTMz51_1.js"></script>
         <script src="js/qgis2web_expressions.js"></script>
         <script src="js/leaflet.js"></script>
+        <script src="https://unpkg.com/geojson-vt@3.2.1/geojson-vt.js"></script>
+        <script src="leaflet-geojson-vt.js"></script>
+<!--<script src="https://unpkg.com/leaflet.vectorgrid@latest/dist/Leaflet.VectorGrid.bundled.js"></script>-->
+<script src="https://unpkg.com/leaflet.vectorgrid@latest/dist/Leaflet.VectorGrid.js"></script>
         <!--<script src="js/L.Control.Layers.Tree.min.js"></script>-->
+        <!--<script src="
+https://cdn.jsdelivr.net/npm/reproject@1.2.7/index.min.js
+"></script>
+<script src="
+https://cdn.jsdelivr.net/npm/proj4@2.12.1/dist/proj4.min.js
+"></script>-->
         <script src="js/leaflet.rotatedMarker.js"></script>
         <script src="js/leaflet.pattern.js"></script>
         <script src="js/leaflet-hash.js"></script>
@@ -224,6 +231,7 @@ if ('serviceWorker' in navigator) {
             position: 'topleft'
         }).addTo(map);
         var bounds_group = new L.featureGroup([]);
+        var bounds_group1 = new L.featureGroup([]);
         function setBounds() {
         }
         map.createPane('pane_TaiwaneMapnew_0');
@@ -290,59 +298,54 @@ if ('serviceWorker' in navigator) {
         map.createPane('pane_Gy_A_rice_weight_UTMz51_1');
         map.getPane('pane_Gy_A_rice_weight_UTMz51_1').style.zIndex = 401;
         map.getPane('pane_Gy_A_rice_weight_UTMz51_1').style['mix-blend-mode'] = 'normal';
-        var layer_Gy_A_rice_weight_UTMz51_1 = new L.geoJson(json_Gy_A_UTMz51_1, {
-            attribution: '',
-            interactive: true,
-            dataVar: 'json_Gy_A_UTMz51_1',
-            layerName: 'layer_Gy_A_rice_weight_UTMz51_1',
-            pane: 'pane_Gy_A_rice_weight_UTMz51_1',
-            onEachFeature: pop_Gy_A_rice_weight_UTMz51_1,
-            style: style_Gy_A_rice_weight_UTMz51_1_0,
-        });
-        
-        bounds_group.addLayer(layer_Gy_A_rice_weight_UTMz51_1);
-        map.addLayer(layer_Gy_A_rice_weight_UTMz51_1);
-        setBounds();
-        resetLabels([layer_Gy_A_rice_weight_UTMz51_1]);
-        map.on("zoomend", function(){
-            resetLabels([layer_Gy_A_rice_weight_UTMz51_1]);
-        });
-        map.on("layeradd", function(){
-            resetLabels([layer_Gy_A_rice_weight_UTMz51_1]);
-        });
-        map.on("layerremove", function(){
-            resetLabels([layer_Gy_A_rice_weight_UTMz51_1]);
-        });
-/////////////////
-var features,features1,tileIndex,arr;
-        function showWeightSum(){
-
-console.log("BEF:"+layer_Gy_A_rice_weight_UTMz51_1.getLayers().length);
-        //console.log("BEF:"+features.length);
-tileIndex = geojsonvt(json_Gy_A_UTMz51_1, {
-	maxZoom: 2,  // max zoom to preserve detail on; can't be higher than 24
-	tolerance: 3, // simplification tolerance (higher means simpler)
-	extent: 4096, // tile extent (both width and height)
-	buffer: 64,   // tile buffer on each side
-	debug: 0,     // logging level (0 to disable, 1 or 2)
-	lineMetrics: false, // whether to enable line metrics tracking for LineString/MultiLineString features
-	promoteId: null,    // name of a feature property to promote to feature.id. Cannot be used with `generateId`
-	generateId: false,  // whether to generate feature ids. Cannot be used with `promoteId`
-	indexMaxZoom: 2,       // max zoom in the initial tile index
-	indexMaxPoints: 0,style: {
-    fillColor: "#1EB300",
-    color: "#F2FF00",
-  },
-});
+////////////////////////////////////////
+//var tileIndex = geojsonvt(json_Gy_A_UTMz51_1, {
+//	maxZoom: 2,  // max zoom to preserve detail on; can't be higher than 24
+//	tolerance: 3, // simplification tolerance (higher means simpler)
+//	extent: 4096, // tile extent (both width and height)
+//	buffer: 64,   // tile buffer on each side
+//	debug: 0,     // logging level (0 to disable, 1 or 2)
+//	lineMetrics: false, // whether to enable line metrics tracking for LineString/MultiLineString features
+//	promoteId: null,    // name of a feature property to promote to feature.id. Cannot be used with `generateId`
+//	generateId: false,  // whether to generate feature ids. Cannot be used with `promoteId`
+//	indexMaxZoom: 2,       // max zoom in the initial tile index
+//	indexMaxPoints: 0,
+//});
 //var features,length=[];tileIndex.tileCoords.forEach((item,ind) => {if(item.z == 2){features = tileIndex.getTile(2, item.x, item.y).features;if(features.length > 0){console.log(item + features.length);length.push([features.length,ind]);}}}) 
-features = tileIndex.getTile(2, 3, 1).features;
-console.log("MID:"+layer_Gy_A_rice_weight_UTMz51_1.getLayers().length);
-        console.log("MID:"+features.length);
-arr = features.map((obj) => obj.tags['PARCEL_NO']);
-features1 = json_Gy_A_UTMz51_1.features.filter((obj) => arr.includes(obj.properties['PARCEL_NO']));
+//var features = tileIndex.getTile(2, 3, 1).features;
+//var arr = features.map((obj) => obj.tags['PARCEL_NO']);
+//var features1 = json_Gy_A_UTMz51_1.features.filter((obj) => arr.includes(obj.properties['PARCEL_NO']));
+///////////////////////////////////////
+/////////////////
+//var features1,arr;
+        function showWeightSum(e){
+
+//console.log("BEF:"+layer_Gy_A_rice_weight_UTMz51_1.getLayers().length);
+        //console.log("BEF:"+features.length);
+//tileIndex = geojsonvt(json_Gy_A_UTMz51_1, {
+//	maxZoom: 2,  // max zoom to preserve detail on; can't be higher than 24
+//	tolerance: 3, // simplification tolerance (higher means simpler)
+//	extent: 4096, // tile extent (both width and height)
+//	buffer: 64,   // tile buffer on each side
+//	debug: 0,     // logging level (0 to disable, 1 or 2)
+//	lineMetrics: false, // whether to enable line metrics tracking for LineString/MultiLineString features
+//	promoteId: null,    // name of a feature property to promote to feature.id. Cannot be used with `generateId`
+//	generateId: false,  // whether to generate feature ids. Cannot be used with `promoteId`
+//	indexMaxZoom: 2,       // max zoom in the initial tile index
+//	indexMaxPoints: 0,style: {
+//  fillColor: "#1EB300",
+//    color: "#F2FF00",
+//  },
+//});
+    //var features,length=[];tileIndex.tileCoords.forEach((item,ind) => {if(item.z == 2){features = tileIndex.getTile(2, item.x, item.y).features;if(features.length > 0){console.log(item + features.length);length.push([features.length,ind]);}}}) 
+//features = tileIndex.getTile(2, 3, 1).features;
+//console.log("MID:"+layer_Gy_A_rice_weight_UTMz51_1.getLayers().length);
+//       console.log("MID:"+features.length);
+//arr = features.map((obj) => obj.tags['PARCEL_NO']);
+//features1 = json_Gy_A_UTMz51_1.features.filter((obj) => arr.includes(obj.properties['PARCEL_NO']));
 //console.log("ARRAY::"+features1[0]);
-console.log("AFT:"+layer_Gy_A_rice_weight_UTMz51_1.getLayers().length);
-        console.log("AFT:"+features.length);
+//console.log("AFT:"+layer_Gy_A_rice_weight_UTMz51_1.getLayers().length);
+//        console.log("AFT:"+features.length);
 ////////////////////////
 //const polys= layer_Gy_A_rice_weight_UTMz51_1.toGeoJSON().features.filter(f => f.geometry.type === "Polygon");
 //const feature = layer_Gy_A_rice_weight_UTMz51_1.toGeoJSON().features.filter(f => f.geometry.type === "MultiPolygon");
@@ -396,23 +399,129 @@ console.log("AFT:"+layer_Gy_A_rice_weight_UTMz51_1.getLayers().length);
 //}
 //    })
 //console.log(arr2);
-var poly = null,arr2=[],length=layer_Gy_A_rice_weight_UTMz51_1.getLayers().length;
-for(let i=31;i<length;i++)
+const vt = geojsonvt(json_Gy_A_UTMz51_1, {maxZoom: 18,  // max zoom to preserve detail on; can't be higher than 24
+    tolerance: 3, // simplification tolerance (higher means simpler)
+    extent: 4096, // tile extent (both width and height)
+    buffer: 64,   // tile buffer on each side
+    debug: 0,     // logging level (0 to disable, 1 or 2)
+    lineMetrics: false, // whether to enable line metrics tracking for LineString/MultiLineString features
+    promoteId: null,    // name of a feature property to promote to feature.id. Cannot be used with `generateId`
+    generateId: false,  // whether to generate feature ids. Cannot be used with `promoteId`
+    indexMaxZoom: 18,       // max zoom in the initial tile index
+    indexMaxPoints: 0,      // max number of points per tile in the index
+    });
+var poly = null,arr2=[],length=vt.tiles[14412618].features.length;
+for(let i=0;i<length;i++)
 {
-    if(typeof layer_Gy_A_rice_weight_UTMz51_1._layers[i] != 'undefined'){
+    if(typeof vt.tiles[14412618].features[i] != 'undefined'){
 //layer_Gy_A_rice_weight_UTMz51_1._layers[i].feature.geometry.coordinates.map(c => poly = turf.polygon(c));
-var inter = polygonClipping.intersection(buffered.geometry.coordinates,layer_Gy_A_rice_weight_UTMz51_1._layers[i].feature.geometry.coordinates);if(inter.length != 0){
+var inter = polygonClipping.intersection(buffered.geometry.coordinates,json_Gy_A_UTMz51_1.features[i].geometry.coordinates);if(inter.length != 0){
     //if(turf.booleanIntersects(buffered,poly)||turf.booleanContains(buffered,poly)){
-results.push(layer_Gy_A_rice_weight_UTMz51_1._layers[i]);
-console.log(layer_Gy_A_rice_weight_UTMz51_1._layers[i]._leaflet_id);
-arr2.push(layer_Gy_A_rice_weight_UTMz51_1._layers[i].feature.properties['PARCEL_NO']);
-results.flatMap(item =>{item.setStyle({fillColor :'#00ff0f'});item.bindTooltip(item.feature.properties['Area'].toString());item.toggleTooltip();});
+results.push(vt.tiles[14412618].features[i]);
+console.log(i);
+arr2.push(json_Gy_A_UTMz51_1.features[i].properties['PARCEL_NO']);
+//console.log(e);
+//results.flatMap(item =>{item.setStyle({fillColor :'#00ff0f'});item.bindTooltip(item.feature.properties['Area'].toString());item.toggleTooltip();});
 //layer_Gy_A_rice_weight_UTMz51_1._layers[i].setStyle({fillColor :'#ffff0f'});
 //layer_Gy_A_rice_weight_UTMz51_1._layers[i].bindTooltip(layer_Gy_A_rice_weight_UTMz51_1._layers[i].feature.properties['wieght_sum'].toString());
 //layer_Gy_A_rice_weight_UTMz51_1._layers[i].toggleTooltip();
 }}
 };
 console.log(arr2);
+    //var tile = [];
+    var options = {
+    //LayerName: 'default',
+    maxZoom: 18,  // max zoom to preserve detail on; can't be higher than 24
+    tolerance: 3, // simplification tolerance (higher means simpler)
+    extent: 4096, // tile extent (both width and height)
+    buffer: 64,   // tile buffer on each side
+    debug: 0,     // logging level (0 to disable, 1 or 2)
+    lineMetrics: false, // whether to enable line metrics tracking for LineString/MultiLineString features
+    promoteId: null,    // name of a feature property to promote to feature.id. Cannot be used with `generateId`
+    generateId: false,  // whether to generate feature ids. Cannot be used with `promoteId`
+    indexMaxZoom: 18,       // max zoom in the initial tile index
+    indexMaxPoints: 0,      // max number of points per tile in the index
+    rendererFactory: L.canvas.tile,//L.svg.tile,
+    interactive: true, //pane: 'OverlayPane',
+
+    vectorTileLayerStyles: {  
+         default: {
+                opacity: 0.1,
+                color: 'rgba(135,35,35,1.0)',
+                //dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 0, 
+                fill: true,
+                fillOpacity: 0,
+                fillColor: '#ff0',
+                //interactive: true,
+                //onEachFeature: showWeightSum,
+                getFeatureId: function(f) {
+        return f.properties.id;
+         },
+    },
+    sliced: function(properties, zoom) {
+                    if (arr2.includes(properties.PARCEL_NO)){
+                    return {
+                        fillColor: "#00ff0f",
+                        fillOpacity: 0.5,
+                        stroke: true,
+                        fill: true,
+                        color: 'blue',
+                        weight: 0.7,
+                    }}
+                    else{
+                    return {
+                        fill: true,
+                        fillColor: '#ffff0f',
+                        fillOpacity: 0.25,
+                        stroke: true,
+                        color: 'green',
+                        weight: 1,
+                    }}
+                }
+}};
+
+        var layer_Gy_A_rice_weight_UTMz51_1 = L.vectorGrid.slicer(json_Gy_A_UTMz51_1, options
+        ).on('click',function(e) {
+    console.log(e.target);console.log(e.layer);
+    highlight = e.layer._renderer._leaflet_id;
+        e.target.setFeatureStyle(highlight, {
+          weight: 2,
+          color: 'white',
+          opacity: 1,
+          fillColor: 'gray',
+          fill: true,
+          //radius: 6,
+          fillOpacity: 0.5
+        });
+    //var properties = e.layer.properties;
+  //L.popup()
+//    .setContent(properties.PARCEL_NO || properties.Area)
+ //   .setLatLng(e.latlng)
+ //   .openOn(map);
+    //clearHighlight();
+//  highlight = properties.name;
+    L.DomEvent.stop(e);
+}).addTo(map);
+
+        layer_Gy_A_rice_weight_UTMz51_1.redraw();
+        layer_Gy_A_rice_weight_UTMz51_1.getPane()['style']['z-index'] = 401;
+        bounds_group.addLayer(layer_Gy_A_rice_weight_UTMz51_1);
+        //map.addLayer(layer_Gy_A_rice_weight_UTMz51_1);
+        setBounds();
+        //resetLabels([layer_Gy_A_rice_weight_UTMz51_1]);
+        //map.on("zoomend", function(){
+            //resetLabels([layer_Gy_A_rice_weight_UTMz51_1]);
+        //});
+        //map.on("layeradd", function(){
+            //resetLabels([layer_Gy_A_rice_weight_UTMz51_1]);
+        //});
+        //map.on("layerremove", function(){
+            //resetLabels([layer_Gy_A_rice_weight_UTMz51_1]);
+        //});
+//////////////////////////////////////////////////
 
 dia.showModal();console.log("1-gon:"+results.length);
 if(results.length == 0){
@@ -420,7 +529,7 @@ if(results.length == 0){
     
 }else{
      dia.innerHTML = '<input type="search" id="site-search" name="q"/><button onclick="run();">SEARCH</button>';
-    document.getElementById("my_script").innerHTML= "function run(){for(i=0;i<results.length;i++){if (document.getElementById('site-search').value == results[0].feature.properties['PARCEL_NO']){document.getElementById('dia').innerHTML='<table><tr><td>帝號:</td><td> 產量:</td></tr><tr><td>'+results[0].feature.properties['PARCEL_NO'].toString() + '</td><td>' + results[0].feature.properties['Area'].toString() + '</td></tr></table> ';}else{alert('No Result')};}}";
+    document.getElementById("my_script").innerHTML= "function run(){for(i=0;i<results.length;i++){if (document.getElementById('site-search').value == results[0].tags['PARCEL_NO']){document.getElementById('dia').innerHTML='<table><tr><td>帝號:</td><td> 產量:</td></tr><tr><td>'+results[0].tags['PARCEL_NO'].toString() + '</td><td>' + results[0].tags['Area'].toString() + '</td></tr></table> ';}else{alert('No Result')};}}";
 }        
 document.getElementById("site-search").setAttribute('value',lnd);console.log('HERE');
         }
@@ -473,7 +582,7 @@ buffered = turf.circle(center, radius, {units: 'meters'});
   }
 
 ////  map.on('click', onMapClick);
-map.on('click', onMapClick);
+//map.on('click', onMapClick);
 ////////////
 //////////////////////////
 
