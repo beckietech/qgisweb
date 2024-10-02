@@ -20,7 +20,7 @@ console.log(workbox.core.cacheNames.precache);
 console.log(workbox.core.cacheNames.runtime);
 if (workbox.navigationPreload.isSupported()) {
     workbox.navigationPreload.enable();
-    console.log('ENABLED');
+    console.log('ENABLED11');
   }
   //workbox.precaching.precacheAndRoute([
   //{'url':'webfonts/fa-solid-900.woff2',
