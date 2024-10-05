@@ -1,0 +1,594 @@
+<!doctype html> <html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="cache-control" content="max-age=31536000" />
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link  rel="stylesheet" href="css/leaflet.css">
+        <!--<link rel="stylesheet" href="css/L.Control.Layers.Tree.css">-->
+        <link  rel="stylesheet" href="css/qgis2web.css">
+        <link  rel="stylesheet" href="css/fontawesome-all.min.css">
+        
+        <!--<script src="
+https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js
+"></script>
+<link href="
+https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css
+" rel="stylesheet">-->
+	<script src="https://cdn.jsdelivr.net/npm/@turf/turf@7.1.0/turf.min.js"></script>
+	<!--<script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>-->
+	<script src="https://unpkg.com/runtime-memcache@3.0.0"></script>
+	<!--<script src="https://cdn.jsdelivr.net/npm/flatbush"></script>-->
+	<!--<script src="https://cdn.jsdelivr.net/npm/geojson-rbush@3.2.0/index.min.js"></script>-->
+	<!--<script src="https://cdn.jsdelivr.net/npm/rbush@4.0.1/rbush.min.js"></script>-->
+	<!--<script src="https://unpkg.com/topojson@3"></script>-->
+	<!--<script src="https://cdn.jsdelivr.net/npm/turf-bbox@3.0.12/index.min.js"></script>-->
+	<!--<script src="https://cdn.jsdelivr.net/npm/geojson-rbush@3.2.0/index.min.js"></script>
+<script src="
+https://cdn.jsdelivr.net/npm/martinez-polygon-clipping@0.7.4/dist/martinez.umd.min.js
+"></script>-->
+<!--<script src="
+https://cdn.jsdelivr.net/npm/polybooljs@1.2.2/dist/polybool.min.js
+"></script>-->
+<script src="
+https://cdn.jsdelivr.net/npm/polygon-clipping@0.15.7/dist/polygon-clipping.umd.min.js
+"></script>
+<!--<script type="module">
+import flattenJscore from 'https://cdn.jsdelivr.net/npm/@flatten-js/core@1.6.1/+esm'
+</script>-->
+<!--<script>
+  // RMStore is globaly set
+  //globalThis.store = new RMStore();
+  //jQuery.data(document.body, "store", new RMStore());
+</script>-->
+	 <!--<link rel="stylesheet" href="nprogress.css">
+        <link rel="stylesheet" href="main.css">
+        <script src="jquery.min.js" defer></script>
+        <script src="nprogress.js" defer></script>
+        <script type="text/javascript" defer>
+                    $(function(){
+                        NProgress.configure({
+                            template: $('#splash-template').html()
+                        });
+                        NProgress.start();
+                    });
+                    $(window).load(function(){
+                        NProgress.done();
+                    })
+        </script>-->
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        #dia {
+            background-color: rgba(0, 0, 0, 0.3);
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+            padding: 0;
+            border: 0;
+            margin: auto 0 0 0;
+            display:inline-block;
+            max-height: 460vh;
+            width: 100%;
+            max-width: 100% !important;/* add this */
+        }
+        </style>
+        <title>2022_衛星預估產量</title>
+    </head>
+    <body>
+         <!--<script type="text" id="splash-template">
+ <div class="splash card">
+            <div role="spinner">
+                <div class="spinner-icon"></div>
+            </div>
+            <p class="lead" style="text-align:center">不要回来，马上走开...</p>
+            <div class="progress">
+                <div class="mybar" role="bar">
+                </div>
+            </div>
+        </div>
+       </script>
+        <iframe id="iframe" style="width: 100%; height: 660px;" src="http://wayou.github.io/SlipHover/" frameborder="0"></iframe>-->
+	<!--<canvas id="myCanvas" width="800" height="600"></canvas>-->
+        <div id="map">
+        </div>
+        <dialog id="dia">
+            <p style="text-align:center"><strong>Loading Please Wait!</strong></p>
+        </dialog>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="https://unpkg.com/geojson-vt@3.2.1/geojson-vt.js"></script>
+        <script src="leaflet-geojson-vt.js"></script>
+<!--<script src="https://unpkg.com/leaflet.vectorgrid@latest/dist/Leaflet.VectorGrid.bundled.js"></script>-->
+<script src="https://unpkg.com/leaflet.vectorgrid@latest/dist/Leaflet.VectorGrid.js"></script>
+        <!--<script src="js/L.Control.Layers.Tree.min.js"></script>-->
+        <!--<script src="
+https://cdn.jsdelivr.net/npm/reproject@1.2.7/index.min.js
+"></script>
+<script src="
+https://cdn.jsdelivr.net/npm/proj4@2.12.1/dist/proj4.min.js
+"></script>-->
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet.wms.js"></script>
+        <script src="data/Gy_A_rice_weight_UTMz51_1.js"></script>
+        <script id="my_script"></script>
+        <script>
+        // main.js
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+        navigator.serviceWorker.register('nprogress.js').then(function(registration) {
+            // Registration was successful
+            console.log('Service Worker registration successful with scope: ', registration.scope);
+            navigator.serviceWorker.ready.then( registration => {
+                //obj = JSON.parse(JSON.stringify(globalThis.store));
+                //registration.active.postMessage(typeof globalThis.store,JSON.parse(JSON.stringify(globalThis.store)));
+                //console.log('passing');
+            });
+            // console.log('Service Worker registration successful with scope: ', registration.scope);
+        }, function(err) {
+            // registration failed :(
+            console.log('ServiceWorker registration failed: ', err);
+        });
+    });
+}
+        
+    var highlightLayer;
+	const queryString = window.location.search;
+	const urlParams = new URLSearchParams(queryString);
+	lat = urlParams.get('lat');
+	lng = urlParams.get('lng');
+	lnd = urlParams.get('lnd');
+	console.log("LAND ID"+lnd);
+	var clickCircle;
+	const results = [];
+
+	console.log(lat + '-' + lng);
+	////
+	//var center = turf.point([121,24]);
+	//var buffered = turf.circle(center, 100, {units: 'meters'});
+	var buffered = null;
+
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+	    //poly = null;
+	    //radius = 10;
+
+///////////////
+		//console.log((turf.booleanIntersects(buffered,poly) || turf.booleanContains(buffered,poly)));
+		//center = turf.point([e.latlng.lng,e.latlng.lat]);
+		//buffered = turf.circle(center, radius, {units: 'meters'});
+		e.target.bindTooltip(e.target.feature.properties['Area'].toString(),
+   {permanent: false, direction:"center"}
+  ).openTooltip()
+//		console.log(e.latlng);
+		//e.target.feature.geometry.coordinates.map(c => poly = turf.polygon(c))
+		//console.log("intersect:"+turf.booleanContains(buffered,poly));
+		//L.circle([e.target.getCenter().lat,e.target.getCenter().lng], radius).addTo(map);
+            if (e.target.feature.geometry.type === 'LineString' || e.target.feature.geometry.type === 'MultiLineString') {
+              highlightLayer.setStyle({
+                color: '#ffff0f',
+              });
+		//e.target.feature.geometry.coordinates.map(c => poly = turf.polygon(c))
+                //console.log("intersect:"+turf.intersect(buffered,poly));
+		//console.log(e.target);
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+		//e.target.feature.geometry.coordinates.map(c => poly = turf.polygon(c))
+                //console.log("intersect:"+turf.intersect(buffered,poly));
+            }
+        }
+        var map = L.map('map', {
+            zoomControl:false, maxZoom:28, minZoom:1
+        }).fitBounds([[24.69013990167979,121.80364150896582],[24.690963404516896,121.80496755608748]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        // remove popup's row if "visible-with-data"
+        function removeEmptyRowsFromPopupContent(content, feature) {
+         var tempDiv = document.createElement('div');
+         tempDiv.innerHTML = content;
+         var rows = tempDiv.querySelectorAll('tr');
+         for (var i = 0; i < rows.length; i++) {
+             var td = rows[i].querySelector('td.visible-with-data');
+             var key = td ? td.id : '';
+             if (td && td.classList.contains('visible-with-data') && feature.properties[key] == null) {
+                 rows[i].parentNode.removeChild(rows[i]);
+             }
+         }
+         return tempDiv.innerHTML;
+        }
+        // add class to format popup if it contains media
+		function addClassToPopupIfMedia(content, popup) {
+			var tempDiv = document.createElement('div');
+			tempDiv.innerHTML = content;
+			if (tempDiv.querySelector('td img')) {
+				popup._contentNode.classList.add('media');
+					// Delay to force the redraw
+					setTimeout(function() {
+						popup.update();
+					}, 10);
+			} else {
+				popup._contentNode.classList.remove('media');
+			}
+		}
+        var zoomControl = L.control.zoom({
+            position: 'topleft'
+        }).addTo(map);
+        var bounds_group = new L.featureGroup([]);
+        var bounds_group1 = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_TaiwaneMapnew_0');
+        map.getPane('pane_TaiwaneMapnew_0').style.zIndex = 400;
+        var layer_TaiwaneMapnew_0 = L.WMS.layer("http://maps.nlsc.gov.tw/S_Maps/wms", "EMAP97", {
+            pane: 'pane_TaiwaneMapnew_0',
+            format: 'image/png',
+            uppercase: true,
+            transparent: true,
+            continuousWorld : true,
+            tiled: true,
+            info_format: 'text/html',
+            opacity: 1,
+            identify: false,
+            attribution: '',
+        });
+        map.addLayer(layer_TaiwaneMapnew_0);
+
+        function pop_Gy_A_rice_weight_UTMz51_1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['PARCEL_NO'] !== null ? autolinker.link(feature.properties['PARCEL_NO'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Phg_name'] !== null ? autolinker.link(feature.properties['Phg_name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">產量<th>\
+                        <td>' + (feature.properties['Area'] !== null ? autolinker.link(feature.properties['Area'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_Gy_A_rice_weight_UTMz51_1_0() {
+            return {
+                pane: 'pane_Gy_A_rice_weight_UTMz51_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(244,233,153,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Gy_A_rice_weight_UTMz51_1');
+        map.getPane('pane_Gy_A_rice_weight_UTMz51_1').style.zIndex = 401;
+        map.getPane('pane_Gy_A_rice_weight_UTMz51_1').style['mix-blend-mode'] = 'normal';
+////////////////////////////////////////
+//var tileIndex = geojsonvt(json_Gy_A_UTMz51_1, {
+//	maxZoom: 2,  // max zoom to preserve detail on; can't be higher than 24
+//	tolerance: 3, // simplification tolerance (higher means simpler)
+//	extent: 4096, // tile extent (both width and height)
+//	buffer: 64,   // tile buffer on each side
+//	debug: 0,     // logging level (0 to disable, 1 or 2)
+//	lineMetrics: false, // whether to enable line metrics tracking for LineString/MultiLineString features
+//	promoteId: null,    // name of a feature property to promote to feature.id. Cannot be used with `generateId`
+//	generateId: false,  // whether to generate feature ids. Cannot be used with `promoteId`
+//	indexMaxZoom: 2,       // max zoom in the initial tile index
+//	indexMaxPoints: 0,
+//});
+//var features,length=[];tileIndex.tileCoords.forEach((item,ind) => {if(item.z == 2){features = tileIndex.getTile(2, item.x, item.y).features;if(features.length > 0){console.log(item + features.length);length.push([features.length,ind]);}}}) 
+//var features = tileIndex.getTile(2, 3, 1).features;
+//var arr = features.map((obj) => obj.tags['PARCEL_NO']);
+//var features1 = json_Gy_A_UTMz51_1.features.filter((obj) => arr.includes(obj.properties['PARCEL_NO']));
+///////////////////////////////////////
+/////////////////
+//var features1,arr;
+        function showWeightSum(e){
+
+//console.log("BEF:"+layer_Gy_A_rice_weight_UTMz51_1.getLayers().length);
+        //console.log("BEF:"+features.length);
+//tileIndex = geojsonvt(json_Gy_A_UTMz51_1, {
+//	maxZoom: 2,  // max zoom to preserve detail on; can't be higher than 24
+//	tolerance: 3, // simplification tolerance (higher means simpler)
+//	extent: 4096, // tile extent (both width and height)
+//	buffer: 64,   // tile buffer on each side
+//	debug: 0,     // logging level (0 to disable, 1 or 2)
+//	lineMetrics: false, // whether to enable line metrics tracking for LineString/MultiLineString features
+//	promoteId: null,    // name of a feature property to promote to feature.id. Cannot be used with `generateId`
+//	generateId: false,  // whether to generate feature ids. Cannot be used with `promoteId`
+//	indexMaxZoom: 2,       // max zoom in the initial tile index
+//	indexMaxPoints: 0,style: {
+//  fillColor: "#1EB300",
+//    color: "#F2FF00",
+//  },
+//});
+    //var features,length=[];tileIndex.tileCoords.forEach((item,ind) => {if(item.z == 2){features = tileIndex.getTile(2, item.x, item.y).features;if(features.length > 0){console.log(item + features.length);length.push([features.length,ind]);}}}) 
+//features = tileIndex.getTile(2, 3, 1).features;
+//console.log("MID:"+layer_Gy_A_rice_weight_UTMz51_1.getLayers().length);
+//       console.log("MID:"+features.length);
+//arr = features.map((obj) => obj.tags['PARCEL_NO']);
+//features1 = json_Gy_A_UTMz51_1.features.filter((obj) => arr.includes(obj.properties['PARCEL_NO']));
+//console.log("ARRAY::"+features1[0]);
+//console.log("AFT:"+layer_Gy_A_rice_weight_UTMz51_1.getLayers().length);
+//        console.log("AFT:"+features.length);
+////////////////////////
+//const polys= layer_Gy_A_rice_weight_UTMz51_1.toGeoJSON().features.filter(f => f.geometry.type === "Polygon");
+//const feature = layer_Gy_A_rice_weight_UTMz51_1.toGeoJSON().features.filter(f => f.geometry.type === "MultiPolygon");
+//features = feature.reduce(
+//  (acc, mp) =>
+//    acc.concat(
+//      mp.geometry.coordinates.map(rings => turf.polygon(rings, mp.properties))
+//    ),polys
+//);
+///////////////////////////
+//const features1 = features.reduce(
+//  (acc, mp, ind) =>
+//      {if(turf.booleanIntersects(buffered,mp) || turf.booleanContains(buffered,mp)){
+//          var index = ind +31;
+//          results.push(layer_Gy_A_rice_weight_UTMz51_1._layers[index]);
+          //layer_Gy_A_rice_weight_UTMz51_1._layers[index].setStyle({fillColor :'#ffff0f'});
+          //layer_Gy_A_rice_weight_UTMz51_1._layers[index].bindTooltip(layer_Gy_A_rice_weight_UTMz51_1._layers[index].feature.properties['wieght_sum'].toString());
+          //layer_Gy_A_rice_weight_UTMz51_1._layers[index].toggleTooltip();
+//          console.log('+31::'+index);}},[]
+//);
+//let arr2=[];
+//const features2 = features1.reduce(
+//  (acc, mp, ind) =>
+//      {var inter = polygonClipping.intersection(buffered.geometry.coordinates,mp.geometry.coordinates);if(inter.length != 0){
+//          index=ind+31;
+//         //console.log(index);
+//         console.log(layer_Gy_A_rice_weight_UTMz51_1._layers[index]._leaflet_id + '*' + index);
+//          results.push(layer_Gy_A_rice_weight_UTMz51_1._layers[index]);
+//          arr2.push(layer_Gy_A_rice_weight_UTMz51_1._layers[index].feature.properties['PARCEL_NO']);
+//          results.flatMap(item =>{item.setStyle({fillColor :'#00ff0f'});item.bindTooltip(item.feature.properties['Area'].toString());item.toggleTooltip();});
+          //layer_Gy_A_rice_weight_UTMz51_1._layers[index].setStyle({fillColor :'#ffff0f'});
+          //layer_Gy_A_rice_weight_UTMz51_1._layers[index].bindTooltip(layer_Gy_A_rice_weight_UTMz51_1._layers[index].feature.properties['Area'].toString());
+          //layer_Gy_A_rice_weight_UTMz51_1._layers[index].toggleTooltip();
+//          }},[])
+//          console.log(arr2);
+          //console.log(layer_Gy_A_rice_weight_UTMz51_1._layers[38999].feature.properties['PARCEL_NO']);
+//let arr2=[];
+//features1.some((geometries,i) =>{
+//    var inter = polygonClipping.intersection(buffered.geometry.coordinates,geometries.geometry.coordinates);if(inter.length != 0){
+    //if(turf.booleanIntersects(buffered,geometries) || turf.booleanContains(buffered,geometries)){
+//    index = i+31;
+//  console.log(index);
+//  results.push(layer_Gy_A_rice_weight_UTMz51_1._layers[index]);
+//  arr2.push(layer_Gy_A_rice_weight_UTMz51_1._layers[index].feature.properties['PARCEL_NO']);
+//  results.flatMap(item =>{item.setStyle({fillColor :'#00ff0f'});item.bindTooltip(item.feature.properties['Area'].toString());item.toggleTooltip();});
+  //layer_Gy_A_rice_weight_UTMz51_1._layers[i+31].setStyle({fillColor :'#ffff0f'});
+  //layer_Gy_A_rice_weight_UTMz51_1._layers[i+31].bindTooltip(layer_Gy_A_rice_weight_UTMz51_1._layers[i+31].feature.properties['wieght_sum'].toString());
+  //layer_Gy_A_rice_weight_UTMz51_1._layers[i+31].toggleTooltip();
+//  forEach Implementation 
+
+//}
+//    })
+//console.log(arr2);
+const vt = geojsonvt(json_Gy_A_UTMz51_1, {maxZoom: 18,  // max zoom to preserve detail on; can't be higher than 24
+    tolerance: 3, // simplification tolerance (higher means simpler)
+    extent: 4096, // tile extent (both width and height)
+    buffer: 64,   // tile buffer on each side
+    debug: 0,     // logging level (0 to disable, 1 or 2)
+    lineMetrics: false, // whether to enable line metrics tracking for LineString/MultiLineString features
+    promoteId: null,    // name of a feature property to promote to feature.id. Cannot be used with `generateId`
+    generateId: false,  // whether to generate feature ids. Cannot be used with `promoteId`
+    indexMaxZoom: 18,       // max zoom in the initial tile index
+    indexMaxPoints: 0,      // max number of points per tile in the index
+    });
+var poly = null,arr2=[],length=vt.tiles[14412618].features.length;
+for(let i=0;i<length;i++)
+{
+    if(typeof vt.tiles[14412618].features[i] != 'undefined'){
+//layer_Gy_A_rice_weight_UTMz51_1._layers[i].feature.geometry.coordinates.map(c => poly = turf.polygon(c));
+var inter = polygonClipping.intersection(buffered.geometry.coordinates,json_Gy_A_UTMz51_1.features[i].geometry.coordinates);if(inter.length != 0){
+    //if(turf.booleanIntersects(buffered,poly)||turf.booleanContains(buffered,poly)){
+results.push(vt.tiles[14412618].features[i]);
+console.log(i);
+arr2.push(json_Gy_A_UTMz51_1.features[i].properties['PARCEL_NO']);
+//console.log(e);
+//results.flatMap(item =>{item.setStyle({fillColor :'#00ff0f'});item.bindTooltip(item.feature.properties['Area'].toString());item.toggleTooltip();});
+//layer_Gy_A_rice_weight_UTMz51_1._layers[i].setStyle({fillColor :'#ffff0f'});
+//layer_Gy_A_rice_weight_UTMz51_1._layers[i].bindTooltip(layer_Gy_A_rice_weight_UTMz51_1._layers[i].feature.properties['wieght_sum'].toString());
+//layer_Gy_A_rice_weight_UTMz51_1._layers[i].toggleTooltip();
+}}
+};
+console.log(arr2);
+    //var tile = [];
+    var options = {
+    //LayerName: 'default',
+    maxZoom: 18,  // max zoom to preserve detail on; can't be higher than 24
+    tolerance: 3, // simplification tolerance (higher means simpler)
+    extent: 4096, // tile extent (both width and height)
+    buffer: 64,   // tile buffer on each side
+    debug: 0,     // logging level (0 to disable, 1 or 2)
+    lineMetrics: false, // whether to enable line metrics tracking for LineString/MultiLineString features
+    promoteId: null,    // name of a feature property to promote to feature.id. Cannot be used with `generateId`
+    generateId: false,  // whether to generate feature ids. Cannot be used with `promoteId`
+    indexMaxZoom: 18,       // max zoom in the initial tile index
+    indexMaxPoints: 0,      // max number of points per tile in the index
+    rendererFactory: L.canvas.tile,//L.svg.tile,
+    interactive: true, //pane: 'OverlayPane',
+
+    vectorTileLayerStyles: {  
+         default: {
+                opacity: 0.1,
+                color: 'rgba(135,35,35,1.0)',
+                //dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 0, 
+                fill: true,
+                fillOpacity: 0,
+                fillColor: '#ff0',
+                //interactive: true,
+                //onEachFeature: showWeightSum,
+                getFeatureId: function(f) {
+        return f.properties.id;
+         },
+    },
+    sliced: function(properties, zoom) {
+                    if (arr2.includes(properties.PARCEL_NO)){
+                    return {
+                        fillColor: "#00ff0f",
+                        fillOpacity: 0.5,
+                        stroke: true,
+                        fill: true,
+                        color: 'blue',
+                        weight: 0.7,
+                    }}
+                    else{
+                    return {
+                        fill: true,
+                        fillColor: '#ffff0f',
+                        fillOpacity: 0.25,
+                        stroke: true,
+                        color: 'green',
+                        weight: 1,
+                    }}
+                }
+}};
+
+        var layer_Gy_A_rice_weight_UTMz51_1 = L.vectorGrid.slicer(json_Gy_A_UTMz51_1, options
+        ).on('click',function(e) {
+    console.log(e.target);console.log(e.layer);
+    highlight = e.layer._renderer._leaflet_id;
+        e.target.setFeatureStyle(highlight, {
+          weight: 2,
+          color: 'white',
+          opacity: 1,
+          fillColor: 'gray',
+          fill: true,
+          //radius: 6,
+          fillOpacity: 0.5
+        });
+    //var properties = e.layer.properties;
+  //L.popup()
+//    .setContent(properties.PARCEL_NO || properties.Area)
+ //   .setLatLng(e.latlng)
+ //   .openOn(map);
+    //clearHighlight();
+//  highlight = properties.name;
+    L.DomEvent.stop(e);
+}).addTo(map);
+
+        layer_Gy_A_rice_weight_UTMz51_1.redraw();
+        layer_Gy_A_rice_weight_UTMz51_1.getPane()['style']['z-index'] = 401;
+        bounds_group.addLayer(layer_Gy_A_rice_weight_UTMz51_1);
+        //map.addLayer(layer_Gy_A_rice_weight_UTMz51_1);
+        setBounds();
+        //resetLabels([layer_Gy_A_rice_weight_UTMz51_1]);
+        //map.on("zoomend", function(){
+            //resetLabels([layer_Gy_A_rice_weight_UTMz51_1]);
+        //});
+        //map.on("layeradd", function(){
+            //resetLabels([layer_Gy_A_rice_weight_UTMz51_1]);
+        //});
+        //map.on("layerremove", function(){
+            //resetLabels([layer_Gy_A_rice_weight_UTMz51_1]);
+        //});
+//////////////////////////////////////////////////
+
+dia.showModal();console.log("1-gon:"+results.length);
+if(results.length == 0){
+    dia.innerHTML='<p style="text-align:center">附近無地號</p>';
+    
+}else{
+     dia.innerHTML = '<input type="search" id="site-search" name="q"/><button onclick="run();">SEARCH</button>';
+    document.getElementById("my_script").innerHTML= "function run(){for(i=0;i<results.length;i++){if (document.getElementById('site-search').value == results[0].tags['PARCEL_NO']){document.getElementById('dia').innerHTML='<table><tr><td>帝號:</td><td> 產量:</td></tr><tr><td>'+results[0].tags['PARCEL_NO'].toString() + '</td><td>' + results[0].tags['Area'].toString() + '</td></tr></table> ';}else{alert('No Result')};}}";
+}        
+document.getElementById("site-search").setAttribute('value',lnd);console.log('HERE');
+        }
+if (clickCircle != undefined) {
+      map.removeLayer(clickCircle);
+    };
+//    clickCircle = L.circle(e.latlng, 1609 * 3, {
+//      color: '#f07300',
+//      fillOpacity: 0,
+//      opacity: 0.5
+//    }).addTo(map);
+clickCircle = L.circle([lat,lng], 100).addTo(map);
+center = turf.point([lng,lat]);
+buffered = turf.circle(center, 100, {units: 'meters'});
+showWeightSum();
+////////////////
+
+/////
+// click circle:
+//  var clickCircle;
+
+function onMapClick(e) {
+console.log(e.latlng);
+radius = 100;
+    if (clickCircle != undefined) {
+      map.removeLayer(clickCircle);
+    };
+//    clickCircle = L.circle(e.latlng, 1609 * 3, {
+//      color: '#f07300',
+//      fillOpacity: 0,
+//      opacity: 0.5
+//    }).addTo(map);
+
+clickCircle = L.circle(e.latlng, 100).addTo(map);
+center = turf.point([e.latlng.lng,e.latlng.lat]);
+buffered = turf.circle(center, radius, {units: 'meters'});
+
+//
+//featureGroup.clearLayers();
+//    layer = e.layer;
+//    featureGroup.addLayer(layer);
+//    GetSelection(featureGroup);
+//console.log(feature.properties);
+//////////////////
+       //map.removeLayer(layer_Gy_A_rice_weight_UTMz51_1);
+        L.DomUtil.remove(layer_Gy_A_rice_weight_UTMz51_1);
+        delete map._panes.layer_Gy_A_rice_weight_UTMz51_1;
+        delete map._paneRenderers.layer_Gy_A_rice_weight_UTMz51_1;
+	showWeightSum();
+  }
+
+////  map.on('click', onMapClick);
+//map.on('click', onMapClick);
+////////////
+//////////////////////////
+
+
+
+        </script>
+        
+    </body>
+</html>
