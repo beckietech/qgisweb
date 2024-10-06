@@ -318,6 +318,7 @@ if ('serviceWorker' in navigator) {
 ///////////////////////////////////////
 /////////////////
 //var features1,arr;
+var vt,arr2=[];
         function showWeightSum(e){
 
 //console.log("BEF:"+layer_Gy_A_rice_weight_UTMz51_1.getLayers().length);
@@ -399,18 +400,18 @@ if ('serviceWorker' in navigator) {
 //}
 //    })
 //console.log(arr2);
-const vt = geojsonvt(json_Gy_A_UTMz51_1, {maxZoom: 18,  // max zoom to preserve detail on; can't be higher than 24
+vt = geojsonvt(json_Gy_A_UTMz51_1, {maxZoom: 12,  // max zoom to preserve detail on; can't be higher than 24
     tolerance: 3, // simplification tolerance (higher means simpler)
     extent: 4096, // tile extent (both width and height)
-    buffer: 64,   // tile buffer on each side
+    buffer: 0,   // tile buffer on each side
     debug: 0,     // logging level (0 to disable, 1 or 2)
     lineMetrics: false, // whether to enable line metrics tracking for LineString/MultiLineString features
     promoteId: null,    // name of a feature property to promote to feature.id. Cannot be used with `generateId`
     generateId: false,  // whether to generate feature ids. Cannot be used with `promoteId`
-    indexMaxZoom: 18,       // max zoom in the initial tile index
+    indexMaxZoom: 12,       // max zoom in the initial tile index
     indexMaxPoints: 0,      // max number of points per tile in the index
     });
-var poly = null,arr2=[],length=vt.tiles[14412618].features.length;
+var poly = null,length=vt.tiles[14412618].features.length;
 for(let i=0;i<length;i++)
 {
     if(typeof vt.tiles[14412618].features[i] != 'undefined'){
@@ -430,7 +431,7 @@ arr2.push(json_Gy_A_UTMz51_1.features[i].properties['PARCEL_NO']);
 console.log(arr2);
     //var tile = [];
     var options = {
-    //LayerName: 'default',
+    //LayerName: 'Gy_A_UTMz51_1',
     maxZoom: 18,  // max zoom to preserve detail on; can't be higher than 24
     tolerance: 3, // simplification tolerance (higher means simpler)
     extent: 4096, // tile extent (both width and height)
@@ -443,25 +444,10 @@ console.log(arr2);
     indexMaxPoints: 0,      // max number of points per tile in the index
     rendererFactory: L.canvas.tile,//L.svg.tile,
     interactive: true, //pane: 'OverlayPane',
-
+    fetchOptions: {mode: 'no-cors'},
     vectorTileLayerStyles: {  
-         default: {
-                opacity: 0.1,
-                color: 'rgba(135,35,35,1.0)',
-                //dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 0, 
-                fill: true,
-                fillOpacity: 0,
-                fillColor: '#ff0',
-                //interactive: true,
-                //onEachFeature: showWeightSum,
-                getFeatureId: function(f) {
-        return f.properties.id;
-         },
-    },
-    sliced: function(properties, zoom) {
+         Gy_A_rice_weight_UTMz51_1js: function(properties) {
+                    //console.log(properties.PARCEL_NO);
                     if (arr2.includes(properties.PARCEL_NO)){
                     return {
                         fillColor: "#00ff0f",
@@ -469,7 +455,7 @@ console.log(arr2);
                         stroke: true,
                         fill: true,
                         color: 'blue',
-                        weight: 0.7,
+                        weight: 1.7,
                     }}
                     else{
                     return {
@@ -478,24 +464,50 @@ console.log(arr2);
                         fillOpacity: 0.25,
                         stroke: true,
                         color: 'green',
-                        weight: 1,
+                        weight: 0.7,
                     }}
-                }
+         },
+         //{
+          //       fill: true,
+        //        fillColor: '#00ff0f',
+          //              fillOpacity: 0.25,
+        //                stroke: true,
+          //              color: 'green',
+        //                weight: 1,
+                //interactive: true,
+                //onEachFeature: showWeightSum,
+        //        getFeatureId: function(f) {
+        //            console.log('getfeatureid');
+        //return f.properties.id;
+         //},
+    //},
+//    sliced: function(properties, zoom) {
+//                    console.log(properties.PARCEL_NO);
+//                    if (arr2.includes(properties.PARCEL_NO)){
+//                    return {
+//                        fillColor: "#00ff0f",
+//                        fillOpacity: 0.5,
+//                        stroke: true,
+//                        fill: true,
+//                        color: 'blue',
+//                        weight: 1.7,
+//                    }}
+//                    else{
+//                    return {
+//                        fill: true,
+//                        fillColor: '#ffff0f',
+//                        fillOpacity: 0.25,
+//                        stroke: true,
+//                        color: 'green',
+//                        weight: 0.7,
+//                    }
+  //  }
+ //               }
 }};
 
-        var layer_Gy_A_rice_weight_UTMz51_1 = L.vectorGrid.slicer(json_Gy_A_UTMz51_1, options
+        var layer_Gy_A_rice_weight_UTMz51_1 = L.vectorGrid.protobuf("tilez/{z}/{x}/{y}.pbf", options
         ).on('click',function(e) {
-    console.log(e.target);console.log(e.layer);
-    highlight = e.layer._renderer._leaflet_id;
-        e.target.setFeatureStyle(highlight, {
-          weight: 2,
-          color: 'white',
-          opacity: 1,
-          fillColor: 'gray',
-          fill: true,
-          //radius: 6,
-          fillOpacity: 0.5
-        });
+    console.log(e.target+':::::');console.log(e.layer);
     //var properties = e.layer.properties;
   //L.popup()
 //    .setContent(properties.PARCEL_NO || properties.Area)
@@ -529,7 +541,7 @@ if(results.length == 0){
     
 }else{
      dia.innerHTML = '<input type="search" id="site-search" name="q"/><button onclick="run();">SEARCH</button>';
-    document.getElementById("my_script").innerHTML= "function run(){for(i=0;i<results.length;i++){if (document.getElementById('site-search').value == results[0].tags['PARCEL_NO']){document.getElementById('dia').innerHTML='<table><tr><td>帝號:</td><td> 產量:</td></tr><tr><td>'+results[0].tags['PARCEL_NO'].toString() + '</td><td>' + results[0].tags['Area'].toString() + '</td></tr></table> ';}else{alert('No Result')};}}";
+    document.getElementById("my_script").innerHTML= "function run(){for(i=0;i<results.length;i++){if (document.getElementById('site-search').value == results[0].tags['PARCEL_NO']){document.getElementById('dia').innerHTML='<table><tr><td>帝號:</td><td> 產量:</td></tr><tr><td>'+results[0].tags['PARCEL_NO'].toString() + '</td><td>' + results[0].tags['Area'].toString() + '</td></tr></table> ';}else{alert('No Result')};return false;}}";
 }        
 document.getElementById("site-search").setAttribute('value',lnd);console.log('HERE');
         }
